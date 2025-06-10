@@ -373,7 +373,7 @@ const VotersPage = () => {
           <table className="w-full min-w-full text-sm text-left text-gray-700 border-collapse">
             <thead>
               <tr className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
-                <th className="w-32 px-6 py-4">
+                <th className="w-32 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     VoterID
                   </span>
@@ -424,7 +424,7 @@ const VotersPage = () => {
                 >
                   {/* Voter ID */}
                   <td
-                    className="px-6 py-4 font-mono text-xs text-gray-600"
+                    className="px-6 py-4 font-mono text-xs text-gray-600 hidden sm:table-cell"
                     onClick={() => handleView(voter)}
                   >
                     {voter.voterId}
@@ -438,8 +438,11 @@ const VotersPage = () => {
                           {voter.fullName.charAt(0)}
                         </span>
                       </div> */}
-                      <span className="text-sm font-medium text-gray-900">
-                        {voter.fullName}
+                      <span className="text-sm font-medium text-gray-900 flex flex-col">
+                        {voter.fullName || "N/A"}
+                        <span className="text-xs font-medium text-gray-700">
+                          {voter.voterId}
+                        </span>
                       </span>
                     </div>
                   </td>
@@ -461,7 +464,7 @@ const VotersPage = () => {
                       }
                     `}
                     >
-                      {voter.gender}
+                      {voter.gender || "N/A"}
                     </span>
                   </td>
 
@@ -480,16 +483,16 @@ const VotersPage = () => {
                     className="px-6 py-4 font-mono text-xs text-gray-600 hidden sm:table-cell"
                     onClick={() => handleView(voter)}
                   >
-                    {voter.mobileNumber}
+                    {voter.mobileNumber || "N/A"}
                   </td>
 
                   {/* Address */}
                   <td
-                    className="gap-2 px-6 py-4 max-w-xs hidden sm:tablecell sm:flex"
+                    className="gap-1 px-6 py-4 max-w-xs hidden sm:tablecell sm:flex"
                     onClick={() => handleView(voter)}
                   >
-                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium">
-                      {voter.houseNo},
+                    <span className="inline-flex itemscenter py1 rounded-md text-sm font-medium text-gray-900">
+                      {voter.houseNo || "N/A"},
                     </span>
                     <div
                       className="truncate text-sm text-gray-900"
