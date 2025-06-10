@@ -4,17 +4,17 @@ import {
   Filter,
   Plus,
   Eye,
-  Edit,
   Printer,
   ChevronLeft,
   ChevronRight,
   X,
-  Trash2,
+  Share2,
 } from "lucide-react";
 import { useVoters } from "../../contexts/VoterContext";
 import Modal from "../../components/ui/Modal";
 import VoterForm from "./VoterForm";
 import VoterDetails from "./VoterDetails";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 25;
 
@@ -375,7 +375,7 @@ const VotersPage = () => {
               <tr className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
                 <th className="w-32 px-6 py-4">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                    Voter ID
+                    VoterID
                   </span>
                 </th>
                 <th className="min-w-48 px-6 py-4">
@@ -383,32 +383,32 @@ const VotersPage = () => {
                     Full Name
                   </span>
                 </th>
-                <th className="w-24 px-6 py-4">
+                <th className="w-24 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Gender
                   </span>
                 </th>
-                <th className="w-16 px-6 py-4">
+                <th className="w-16 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Age
                   </span>
                 </th>
-                <th className="w-32 px-6 py-4">
+                <th className="w-32 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Mobile
                   </span>
                 </th>
-                <th className="min-w-64 px-6 py-4">
+                <th className="min-w-64 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Address
                   </span>
                 </th>
-                <th className="w-24 px-6 py-4">
+                <th className="w-24 px-6 py-4 hidden sm:table-cell">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Caste
                   </span>
                 </th>
-                <th className="w-20 px-6 py-4 text-right">
+                <th className="w-20 px-6 py-4 text-center">
                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     Actions
                   </span>
@@ -421,15 +421,17 @@ const VotersPage = () => {
                 <tr
                   key={voter.id}
                   className="hover:bg-gray-50 transition-colors duration-200 group hover:cursor-pointer"
-                  onClick={() => handleView(voter)}
                 >
                   {/* Voter ID */}
-                  <td className="px-6 py-4 font-mono text-xs text-gray-600">
+                  <td
+                    className="px-6 py-4 font-mono text-xs text-gray-600"
+                    onClick={() => handleView(voter)}
+                  >
                     {voter.voterId}
                   </td>
 
                   {/* Full Name */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4" onClick={() => handleView(voter)}>
                     <div className="flex items-center space-x-4">
                       {/* <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center">
                         <span className="text-white text-sm font-semibold">
@@ -443,7 +445,10 @@ const VotersPage = () => {
                   </td>
 
                   {/* Gender */}
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4 hidden sm:table-cell"
+                    onClick={() => handleView(voter)}
+                  >
                     <span
                       className={`
                       inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border
@@ -461,19 +466,28 @@ const VotersPage = () => {
                   </td>
 
                   {/* Age */}
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4 hidden sm:table-cell"
+                    onClick={() => handleView(voter)}
+                  >
                     <span className="text-sm font-medium text-gray-900 bg-gray-100 px-2 py-1 rounded-lg">
                       {voter.age}
                     </span>
                   </td>
 
                   {/* Mobile */}
-                  <td className="px-6 py-4 font-mono text-xs text-gray-600">
+                  <td
+                    className="px-6 py-4 font-mono text-xs text-gray-600 hidden sm:table-cell"
+                    onClick={() => handleView(voter)}
+                  >
                     {voter.mobileNumber}
                   </td>
 
                   {/* Address */}
-                  <td className="flex gap-2 px-6 py-4 max-w-xs">
+                  <td
+                    className="gap-2 px-6 py-4 max-w-xs hidden sm:tablecell sm:flex"
+                    onClick={() => handleView(voter)}
+                  >
                     <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium">
                       {voter.houseNo},
                     </span>
@@ -489,7 +503,10 @@ const VotersPage = () => {
                   </td>
 
                   {/* House No */}
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4 hidden sm:table-cell"
+                    onClick={() => handleView(voter)}
+                  >
                     <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                       {voter.caste}
                     </span>
@@ -526,6 +543,17 @@ const VotersPage = () => {
                       >
                         <Printer className="h-4 w-4" />
                       </button>
+                      <a
+                        // onClick={() => handleDelete(voter)}
+                        href={`https://wa.me/${voter.mobileNumber}?text=custom%message`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        // to={`https://google.com`}
+                        className="p-2 rounded-lg text-cyan-400 hover:text-cyan-600 hover:bg-cyan-50 transition-all duration-200 hover:scale-110"
+                        title="Delete voter"
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </a>
                     </div>
                   </td>
                 </tr>
