@@ -1,35 +1,36 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // change this to false in production
+  // For testing purposes, you can set it to true to simulate a logged-in user
   const [user, setUser] = useState(null);
 
   const login = async (email, password) => {
     // Simulate API call
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (email === 'admin@example.com' && password === 'password') {
+        if (email === "admin@example.com" && password === "password") {
           const userData = {
             id: 1,
-            name: 'Admin User',
+            name: "Admin User",
             email: email,
-            role: 'admin'
+            role: "admin",
           };
           setUser(userData);
           setIsLoggedIn(true);
           resolve(userData);
         } else {
-          reject(new Error('Invalid credentials'));
+          reject(new Error("Invalid credentials"));
         }
       }, 1000);
     });
@@ -44,13 +45,13 @@ export const AuthProvider = ({ children }) => {
             id: Date.now(),
             name: formData.fullName,
             email: formData.email,
-            role: 'user'
+            role: "user",
           };
           setUser(userData);
           setIsLoggedIn(true);
           resolve(userData);
         } else {
-          reject(new Error('Registration failed'));
+          reject(new Error("Registration failed"));
         }
       }, 1000);
     });
@@ -66,12 +67,8 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     register,
-    logout
+    logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
