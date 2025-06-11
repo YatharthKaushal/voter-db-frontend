@@ -4,11 +4,11 @@ import Sidebar from './Sidebar';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Layout = ({ children }) => {
-  const { isLoggedIn } = useAuth();
+  // const { isLoggedIn } = useAuth();
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isLoggedIn) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -1,42 +1,49 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  UserPlus, 
-  LogOut, 
-  Menu, 
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  UserPlus,
+  LogOut,
+  Menu,
   X,
   ChevronRight,
   Vote,
   Shield,
-  Sparkles
-} from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+  Sparkles,
+  DatabaseBackup,
+} from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const navigation = [
   {
-    name: 'Dashboard',
-    href: '/dashboard',
+    name: "Dashboard",
+    href: "/dashboard",
     icon: LayoutDashboard,
-    description: 'Overview & Analytics'
+    description: "Overview & Analytics",
   },
   {
-    name: 'Voters',
-    href: '/voters',
+    name: "Voters",
+    href: "/voters",
     icon: Users,
-    description: 'Manage Voter Database'
+    description: "Voter Database",
+  },
+  {
+    name: "Offline Records",
+    href: "/voters/offline",
+    icon: DatabaseBackup,
+    description: "Voter Database - OFFLINE",
   },
 ];
 
 const Sidebar = () => {
   const location = useLocation();
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const handleLogout = () => {
-    logout();
+    // logout();
   };
 
   const SidebarContent = ({ isMobile = false }) => (
@@ -44,7 +51,7 @@ const Sidebar = () => {
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-50 to-transparent rounded-full opacity-30 -translate-y-8 translate-x-8"></div>
       <div className="absolute bottom-20 left-0 w-24 h-24 bg-gradient-to-tr from-emerald-50 to-transparent rounded-full opacity-40 -translate-x-6"></div>
-      
+
       {/* Logo/Brand */}
       <div className="relative flex h-16 items-center justify-between border-b border-gray-100 px-4 bg-gradient-to-r from-white to-gray-50/50">
         <div className="flex items-center group">
@@ -60,7 +67,9 @@ const Sidebar = () => {
                 </span>
                 <Sparkles className="h-4 w-4 text-green-500 animate-pulse" />
               </div>
-              <p className="text-xs text-gray-500 font-medium">Management System</p>
+              <p className="text-xs text-gray-500 font-medium">
+                Management System
+              </p>
             </div>
           )}
         </div>
@@ -79,58 +88,67 @@ const Sidebar = () => {
         {navigation.map((item, index) => {
           const isActive = location.pathname === item.href;
           const Icon = item.icon;
-          
+
           return (
             <div key={item.name} className="relative group">
               <Link
                 to={item.href}
                 onClick={() => isMobile && setIsMobileOpen(false)}
                 className={`relative flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-sm ${
-                  isActive 
-                    ? (isExpanded || isMobile) 
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl' 
-                      : 'bg-green-50 text-green-700 border-2 border-green-200 shadow-sm'
-                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50 hover:text-green-700'
+                  isActive
+                    ? isExpanded || isMobile
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl"
+                      : "bg-green-50 text-green-700 border-2 border-green-200 shadow-sm"
+                    : "text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-green-50 hover:text-green-700"
                 }`}
                 style={{
-                  animationDelay: `${index * 100}ms`
+                  animationDelay: `${index * 100}ms`,
                 }}
               >
                 {/* Active indicator for expanded state */}
                 {isActive && (isExpanded || isMobile) && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full shadow-sm"></div>
                 )}
-                
+
                 {/* Active indicator for collapsed state */}
                 {isActive && !isExpanded && !isMobile && (
                   <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-green-500 rounded-r-full shadow-sm"></div>
                 )}
-                
-                <div className={`relative flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-300 ${
-                  isActive 
-                    ? (isExpanded || isMobile) 
-                      ? 'bg-white/20' 
-                      : 'bg-green-100' 
-                    : 'group-hover:bg-green-100'
-                }`}>
-                  <Icon className={`h-5 w-5 transition-all duration-300 ${
-                    isActive 
-                      ? (isExpanded || isMobile) 
-                        ? 'text-white' 
-                        : 'text-green-600' 
-                      : 'text-gray-600 group-hover:text-green-600'
-                  }`} />
+
+                <div
+                  className={`relative flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-300 ${
+                    isActive
+                      ? isExpanded || isMobile
+                        ? "bg-white/20"
+                        : "bg-green-100"
+                      : "group-hover:bg-green-100"
+                  }`}
+                >
+                  <Icon
+                    className={`h-5 w-5 transition-all duration-300 ${
+                      isActive
+                        ? isExpanded || isMobile
+                          ? "text-white"
+                          : "text-green-600"
+                        : "text-gray-600 group-hover:text-green-600"
+                    }`}
+                  />
                 </div>
-                
+
                 {(isExpanded || isMobile) && (
                   <div className="ml-3 flex-1 min-w-0 transition-all duration-300">
                     <div className="flex items-center justify-between">
                       <div className="text-left">
                         <p className="font-semibold truncate">{item.name}</p>
-                        <p className={`text-xs opacity-75 truncate ${
-                          isActive ? 'text-white/80' : 'text-gray-500'
-                        }`}>
-                          {item.description}
+                        <p
+                          className={`text-xs opacity-75 truncate ${
+                            isActive ? "text-white/80" : "text-gray-500"
+                          }`}
+                        >
+                          {/* {item.description} */}
+                          {item.href === "/voters/offline"
+                            ? "Last Sync: 2023-10-01"
+                            : item.description}
                         </p>
                       </div>
                       {isActive && (
@@ -139,18 +157,20 @@ const Sidebar = () => {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Hover tooltip for collapsed state */}
                 {!isExpanded && !isMobile && (
                   <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
                     <div className="flex flex-col">
                       <span className="font-medium">{item.name}</span>
-                      <span className="text-xs text-gray-300">{item.description}</span>
+                      <span className="text-xs text-gray-300">
+                        {item.description}
+                      </span>
                     </div>
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
                   </div>
                 )}
-                
+
                 {/* Ripple effect */}
                 <div className="absolute inset-0 overflow-hidden rounded-xl">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
@@ -191,7 +211,7 @@ const Sidebar = () => {
           {(isExpanded || isMobile) && (
             <span className="ml-3 transition-all duration-300">Logout</span>
           )}
-          
+
           {/* Hover tooltip for collapsed state */}
           {!isExpanded && !isMobile && (
             <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
@@ -199,7 +219,7 @@ const Sidebar = () => {
               <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
             </div>
           )}
-          
+
           {/* Ripple effect */}
           <div className="absolute inset-0 overflow-hidden rounded-xl">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-100/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
@@ -224,33 +244,35 @@ const Sidebar = () => {
         </div>
       )}
 
-
       {/* Mobile sidebar overlay */}
-        <div className="fixed inset-0 z-[50] lg:hidden pointer-events-none">
-          {/* Background overlay */}
-          <div
-            className={`absolute inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 ${
-              isMobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0'
-            }`}
-            onClick={() => setIsMobileOpen(false)}
-          />
+      <div className="fixed inset-0 z-[50] lg:hidden pointer-events-none">
+        {/* Background overlay */}
+        <div
+          className={`absolute inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 ${
+            isMobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0"
+          }`}
+          onClick={() => setIsMobileOpen(false)}
+        />
 
-          {/* Sidebar panel with slide animation */}
-          <div
-           className={`absolute inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 
+        {/* Sidebar panel with slide animation */}
+        <div
+          className={`absolute inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 
               transform transition-transform duration-300 ease-in-out
-              ${isMobileOpen ? 'translate-x-0 pointer-events-auto' : '-translate-x-full pointer-events-none'}
+              ${
+                isMobileOpen
+                  ? "translate-x-0 pointer-events-auto"
+                  : "-translate-x-full pointer-events-none"
+              }
             `}
-          >
-            <SidebarContent isMobile />
-          </div>
+        >
+          <SidebarContent isMobile />
         </div>
-
+      </div>
 
       {/* Desktop sidebar */}
-      <div 
+      <div
         className={`hidden lg:fixed lg:inset-y-0 lg:z-[40] lg:flex lg:flex-col bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-lg transition-all duration-300 ease-out ${
-          isExpanded ? 'lg:w-72' : 'lg:w-20'
+          isExpanded ? "lg:w-72" : "lg:w-20"
         }`}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
@@ -259,9 +281,11 @@ const Sidebar = () => {
       </div>
 
       {/* Spacer for main content */}
-      <div className={`hidden lg:block transition-all duration-300 ${
-        isExpanded ? 'lg:w-72' : 'lg:w-20'
-      }`} />
+      <div
+        className={`hidden lg:block transition-all duration-300 ${
+          isExpanded ? "lg:w-72" : "lg:w-20"
+        }`}
+      />
     </>
   );
 };

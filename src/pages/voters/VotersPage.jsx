@@ -9,6 +9,7 @@ import {
   ChevronRight,
   X,
   Share2,
+  RefreshCcw,
 } from "lucide-react";
 import { useVoters } from "../../contexts/VoterContext";
 import Modal from "../../components/ui/Modal";
@@ -19,7 +20,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 const ITEMS_PER_PAGE = 25;
 
 const VotersPage = () => {
-  const { voters, deleteVoter } = useVoters();
+  const { voters, deleteVoter, loading, totalPageCount, totalRecordsCount } =
+    useVoters();
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     gender: "",
@@ -37,7 +39,7 @@ const VotersPage = () => {
 
   // Filter and search voters
   const filteredVoters = useMemo(() => {
-    return voters.filter((voter) => {
+    return voters?.filter((voter) => {
       const matchesSearch =
         !searchTerm ||
         voter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,7 +85,8 @@ const VotersPage = () => {
   }, [voters, searchTerm, filters]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredVoters.length / ITEMS_PER_PAGE);
+  // const totalPages = Math.ceil(filteredVoters.length / ITEMS_PER_PAGE);
+  const totalPages = totalPageCount;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedVoters = filteredVoters.slice(
     startIndex,
@@ -359,12 +362,21 @@ const VotersPage = () => {
               <span className="font-medium">
                 {Math.min(startIndex + ITEMS_PER_PAGE, filteredVoters.length)}
               </span>{" "}
-              of <span className="font-medium">{filteredVoters.length}</span>{" "}
+              of <span className="font-medium">{totalRecordsCount}</span>{" "}
               results
             </p>
-            <div className="text-sm text-gray-500">
-              {filteredVoters.length} of {voters.length} voters
-            </div>
+            {/* <button className="btn-ghost group">
+              <RefreshCcw
+                size={16}
+                className="inline mr-1 group-hover:rotate-180 transition-transform duration-200"
+              />
+              <span
+                className="cursor-pointer"
+                // onClick={resetFilters}
+              >
+                Sync Database
+              </span>
+            </button> */}
           </div>
         </div>
 
@@ -419,7 +431,7 @@ const VotersPage = () => {
             <tbody className="divide-y divide-gray-100">
               {paginatedVoters.map((voter) => (
                 <tr
-                  key={voter.id}
+                  key={voter.id || voter._id}
                   className="hover:bg-gray-50 transition-colors duration-200 group hover:cursor-pointer"
                 >
                   {/* Voter ID */}
@@ -627,8 +639,19 @@ const VotersPage = () => {
         )}
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="p-8 text-center text-gray-500">
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-4 border-y-green-300 border-x-green-500 mx-auto"
+            key={0}
+          ></div>
+          <p className="mt-4">Loading voters...</p>
+        </div>
+      )}
+
       {/* Empty State */}
-      {filteredVoters.length === 0 && (
+      {filteredVoters.length === 0 && !loading && (
         <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
             <Search className="h-8 w-8 text-gray-400" />
