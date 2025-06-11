@@ -20,7 +20,8 @@ export const VoterProvider = ({ children }) => {
   const [totalRecordsCount, setTotalRecordsCount] = useState();
 
   const BASE_URL =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://voter-backend-y6hw.onrender.com/api";
 
   useEffect(() => {
     setLoading(true);
