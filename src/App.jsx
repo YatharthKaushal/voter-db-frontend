@@ -14,54 +14,58 @@ import Dashboard from "./pages/Dashboard";
 import VotersPage from "./pages/voters/VotersPage";
 import VotersPageOffline from "./pages/voters/VotersPageOffline";
 import { VoterProviderOffline } from "./contexts/VoterContextOffline";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    // <AuthProvider>
-    <VoterProvider>
-      <Router>
-        <Routes>
-          {/* <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} /> */}
-          <Route path="/" element={<Navigate to="/dashboard\" replace />} />
-          <Route
-            path="/dashboard"
-            element={
-              <Layout>
-                <Dashboard />
-              </Layout>
-            }
-          />
-          <Route
-            path="/voters"
-            element={
-              <Layout>
-                <VotersPage />
-              </Layout>
-            }
-          />
-          <Route
-            path="/voters/new"
-            element={
-              <Layout>
-                <VotersPage />
-              </Layout>
-            }
-          />
-          <Route
-            path="/voters/offline"
-            element={
-              <VoterProviderOffline>
+    <AuthProvider>
+      <VoterProvider>
+        <div>
+          <Toaster />
+        </div>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Navigate to="/dashboard\" replace />} />
+            <Route
+              path="/dashboard"
+              element={
                 <Layout>
-                  <VotersPageOffline />
+                  <Dashboard />
                 </Layout>
-              </VoterProviderOffline>
-            }
-          />
-        </Routes>
-      </Router>
-    </VoterProvider>
-    // </AuthProvider>
+              }
+            />
+            <Route
+              path="/voters"
+              element={
+                <Layout>
+                  <VotersPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/voters/new"
+              element={
+                <Layout>
+                  <VotersPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/voters/offline"
+              element={
+                <VoterProviderOffline>
+                  <Layout>
+                    <VotersPageOffline />
+                  </Layout>
+                </VoterProviderOffline>
+              }
+            />
+          </Routes>
+        </Router>
+      </VoterProvider>
+    </AuthProvider>
   );
 }
 

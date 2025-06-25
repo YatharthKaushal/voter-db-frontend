@@ -38,12 +38,12 @@ const navigation = [
 
 const Sidebar = () => {
   const location = useLocation();
-  // const { logout } = useAuth();
+  const { logout } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const handleLogout = () => {
-    // logout();
+    logout();
   };
 
   const SidebarContent = ({ isMobile = false }) => (
@@ -234,13 +234,19 @@ const Sidebar = () => {
       {/* Mobile menu button - Fixed position */}
       {!isMobileOpen && (
         <div className="lg:hidden">
-          <button
-            onClick={() => setIsMobileOpen(true)}
-            className="fixed top-4 left-4 z-[60] rounded-xl bg-white/90 backdrop-blur-sm p-3 shadow-lg border border-gray-200/50 transition-all duration-300 hover:shadow-xl hover:scale-105 hover:bg-white"
-          >
-            <Menu className="h-5 w-5 text-gray-700" />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
+          <div className="fixed top-0 left4 z-[60] w-full bgred-500 border2 border-red-700 h-fit bg-emerald-700 p-2 flex items-center gap24">
+            <button
+              onClick={() => setIsMobileOpen(true)}
+              className="ml-4 rounded-xl bgwhite/90 backdrop-blur-sm p-3 shadow-xs borderborder-gray-200/50 transition-all duration-300 hover:shadow-sm hover:scale-105 hover:bgwhite"
+            >
+              <Menu className="h-5 w-5 textemerald-700 text-white" />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 opacity-0 hover:opacity100 transition-opacity duration-300"></div>
+            </button>
+            <div className="flex">
+              <h1 className="text-3xl font-bold text-white">VoterDB</h1>
+              <Sparkles className="h-4 w-4 text-white animate-pulse" />
+            </div>
+          </div>
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Search,
   Filter,
@@ -10,18 +10,27 @@ import {
   X,
   Share2,
   RefreshCcw,
+  Upload,
 } from "lucide-react";
 import { useVoters } from "../../contexts/VoterContext";
 import Modal from "../../components/ui/Modal";
 import VoterForm from "./VoterForm";
 import VoterDetails from "./VoterDetails";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import toast from "react-hot-toast";
 
 const ITEMS_PER_PAGE = 25;
 
 const VotersPageOffline = () => {
-  const { voters, deleteVoter, loading, totalPageCount, totalRecordsCount } =
-    useVoters();
+  const {
+    deleteVoter,
+    loading,
+    totalPageCount,
+    totalRecordsCount,
+    offlineData,
+    setOfflineData,
+  } = useVoters();
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     gender: "",
@@ -39,7 +48,7 @@ const VotersPageOffline = () => {
 
   // Filter and search voters
   const filteredVoters = useMemo(() => {
-    return voters?.filter((voter) => {
+    return offlineData?.filter((voter) => {
       const matchesSearch =
         !searchTerm ||
         voter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -82,7 +91,7 @@ const VotersPageOffline = () => {
         matchesAssembly
       );
     });
-  }, [voters, searchTerm, filters]);
+  }, [offlineData, searchTerm, filters]);
 
   // Pagination
   // const totalPages = Math.ceil(filteredVoters.length / ITEMS_PER_PAGE);
@@ -94,15 +103,17 @@ const VotersPageOffline = () => {
   );
 
   // Get unique values for filters
-  const uniqueGenders = [...new Set(voters.map((v) => v.gender))].filter(
+  const uniqueGenders = [...new Set(offlineData.map((v) => v.gender))].filter(
     Boolean
   );
-  const uniqueCastes = [...new Set(voters.map((v) => v.caste))].filter(Boolean);
-  const uniqueDistricts = [...new Set(voters.map((v) => v.district))].filter(
+  const uniqueCastes = [...new Set(offlineData.map((v) => v.caste))].filter(
     Boolean
   );
+  const uniqueDistricts = [
+    ...new Set(offlineData.map((v) => v.district)),
+  ].filter(Boolean);
   const uniqueAssemblyConstituencies = [
-    ...new Set(voters.map((v) => v.assemblyConstituencyName)),
+    ...new Set(offlineData.map((v) => v.assemblyConstituencyName)),
   ].filter(Boolean);
 
   const handleFilterChange = (key, value) => {
@@ -169,6 +180,68 @@ const VotersPageOffline = () => {
     return pages;
   };
 
+  const fileInputRef = useRef(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [importLoading, setImportLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  const handleImport = async () => {
+    if (!uploadedFile) {
+      setMessage({ type: "error", text: "Please select a file first" });
+      toast.error("Please select a file first");
+      return;
+    }
+
+    setImportLoading(true);
+    try {
+      // Read the JSON file
+      const text = await uploadedFile.text();
+      let parsedVoters;
+      try {
+        parsedVoters = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error("Invalid JSON format");
+      }
+
+      // Validate that parsed data is an array
+      if (!Array.isArray(parsedVoters)) {
+        throw new Error("JSON file must contain an array of voter objects");
+      }
+
+      // Basic validation for required fields
+      const requiredFields = ["voterId", "fullName", "gender"];
+      for (const voter of parsedVoters) {
+        for (const field of requiredFields) {
+          if (!voter[field]) {
+            throw new Error(`Missing required field: ${field}`);
+          }
+        }
+      }
+
+      // Call importVoters from VoterContext
+      await setOfflineData(parsedVoters);
+
+      // Show success toast and message
+      toast.success(`Successfully imported ${parsedVoters.length} voters`);
+      setMessage({
+        type: "success",
+        text: `Successfully imported ${parsedVoters.length} voters`,
+      });
+      setUploadedFile(null);
+      fileInputRef.current.value = "";
+    } catch (error) {
+      console.error("Error importing voters:", error);
+      toast.error(error.message || "Failed to import voters");
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to import voters",
+      });
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -179,15 +252,20 @@ const VotersPageOffline = () => {
             Manage and view all voter information
           </p>
         </div>
-        <div className="mt-4 sm:mt-0">
+        {/* <div className="mt-4 sm:mt-0">
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={handleImport}
+            disabled={importLoading}
             className="btn-primary flex items-center"
           >
-            <Plus className="h-4 w-4 mr-2" />
-            Add voter
+            {importLoading ? (
+              <LoadingSpinner size="small" className="mr-2" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
+            Import Voters
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Search and Filter Bar */}
@@ -365,7 +443,7 @@ const VotersPageOffline = () => {
               of <span className="font-medium">{totalRecordsCount}</span>{" "}
               results
             </p>
-            <button className="btn-ghost group">
+            {/* <button className="btn-ghost group">
               <RefreshCcw
                 size={16}
                 className="inline mr-1 group-hover:rotate-180 transition-transform duration-200"
@@ -376,7 +454,7 @@ const VotersPageOffline = () => {
               >
                 Sync Database
               </span>
-            </button>
+            </button> */}
           </div>
         </div>
 
