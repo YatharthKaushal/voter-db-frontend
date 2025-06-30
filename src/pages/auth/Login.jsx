@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -20,6 +20,30 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Initialize state with the current online status
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    // Function to update the online status
+    const updateOnlineStatus = () => {
+      setIsOnline(navigator.onLine);
+    };
+
+    // Add event listeners for 'online' and 'offline' events
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+
+    // Initial check on mount (important for when the component mounts after the initial load)
+    updateOnlineStatus();
+
+    // Cleanup function to remove event listeners when the component unmounts
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+    };
+  }, []);
+
+  if (!isOnline) return <Navigate to="/voters/offline" replace />;
   if (isLoggedIn) return <Navigate to="/dashboard" replace />;
 
   const validateForm = () => {
@@ -194,7 +218,15 @@ const Login = () => {
               </div> */}
               <div className="mb-6 p-4 bg-emerald-50/80 backdrop-blur-sm rounded-2xl border border-emerald-200/5  max-w-md m-auto">
                 <p className="text-sm text-emerald-700 text-center">
-                  <strong>Demo:</strong> admin1 / securepassword123
+                  <strong>Demo:</strong> admin1 / securepassword123{" | "}
+                  <span>
+                    <a
+                      href="/voters/offline"
+                      className="text-sm text-emerald-800 bg-emerald-200 rounded-sm px-0.5"
+                    >
+                      <strong>Offline Mode {">"}</strong>
+                    </a>
+                  </span>
                 </p>
               </div>
 

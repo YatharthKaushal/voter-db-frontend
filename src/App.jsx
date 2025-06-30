@@ -15,6 +15,7 @@ import VotersPage from "./pages/voters/VotersPage";
 import VotersPageOffline from "./pages/voters/VotersPageOffline";
 import { VoterProviderOffline } from "./contexts/VoterContextOffline";
 import { Toaster } from "react-hot-toast";
+import Test from "./pages/Test";
 
 function App() {
   return (
@@ -55,13 +56,14 @@ function App() {
             <Route
               path="/voters/offline"
               element={
-                <VoterProviderOffline>
-                  <Layout>
-                    <VotersPageOffline />
-                  </Layout>
-                </VoterProviderOffline>
+                // <VoterProviderOffline>
+                // <Layout>
+                <VotersPageOffline />
+                // </Layout>
+                // </VoterProviderOffline>
               }
             />
+            <Route path="/test" element={<Test />} />
           </Routes>
         </Router>
       </VoterProvider>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -36,6 +36,10 @@ const VotersPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedVoter, setSelectedVoter] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    console.log(voters);
+  }, [voters]);
 
   // Filter and search voters
   const filteredVoters = useMemo(() => {
